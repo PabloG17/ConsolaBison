@@ -1289,27 +1289,27 @@ return(0);
 case 55:
 YY_RULE_SETUP
 #line 167 "go.l"
-return(400);
+return(STRING);
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
 #line 168 "go.l"
-return(401);
+return(INTEGER);
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
 #line 169 "go.l"
-return(402);
+return(FLOAT);
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
 #line 170 "go.l"
-return(403);
+return(IMAGINARY);
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
 #line 171 "go.l"
-return(500);
+return(IDENTIFIER);
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
@@ -2336,16 +2336,17 @@ void yyfree (void * ptr )
 
 
 //Función que abre o ficheiro de lectura, se non se pode abrir sacamos un erro
-void abrirFicheiro(char* nomeFicheiro){
-    yyin = fopen(nomeFicheiro, "r");
-    if(yyin==NULL){
-        erro(nomeFicheiro, FICHEIRONONABERTO);
+void lerEntrada(char* entrada){
+    yy_scan_string(entrada);
+    if(entrada==NULL){
+        printf("Erro ó ler a entrada\n");
+        exit(1);
     }
 }
 
 //Función que pecha o ficheiro de lectura
 void pecharFicheiro(){
-    fclose(yyin);
+    yylex_destroy();
 }
 
 //Función que devolve o seguinte compoñente léxico que sexa reelevante

@@ -178,16 +178,16 @@ e os valores que non se enmarcan en ningunha destas expresións son tratados com
 
 
 //Función que abre o ficheiro de lectura, se non se pode abrir sacamos un erro
-void abrirFicheiro(char* nomeFicheiro){
-    yyin = fopen(nomeFicheiro, "r");
-    if(yyin==NULL){
-        erro(nomeFicheiro, FICHEIRONONABERTO);
+void lerEntrada(char* entrada){
+    yy_scan_string(entrada);
+    if(entrada==NULL){
+        printf("Erro ó ler a entrada\n");
+        exit(1);
     }
 }
 
 //Función que pecha o ficheiro de lectura
 void pecharFicheiro(){
-    fclose(yyin);
     yylex_destroy();
 }
 

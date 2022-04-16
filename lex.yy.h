@@ -11,7 +11,7 @@ typedef struct lexema{
 lexema* seguinteComponhente();
 
 //Función que abre o ficheiro de lectura
-void abrirFicheiro(char* nomeFicheiro);
+void lerEntrada(char* entrada);
 
 //Función que pecha o ficheiro de lectura
 void pecharFicheiro();
