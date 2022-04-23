@@ -8,7 +8,8 @@
 //Cada un dos compoñentes da táboa hash
 typedef struct celda{
     char *lexema;
-    int componhenteLexico;
+    double valor;
+    void *ptr;
     struct celda *seguinte;
 }celda;
 
@@ -22,7 +23,7 @@ celda* inicializarCelda(){
     celda *c;
     c = (celda*)malloc(sizeof(celda));
     c->lexema = NULL;
-    c->componhenteLexico=0;
+    c->ptr = NULL;
     c->seguinte = NULL;
     return c;
 }
@@ -82,7 +83,7 @@ int hash(char *lexema){
     return valorHash%tamhash;
 }
 
-//Función que devolve o compoñente léxico asociado ó lexema
+//Función que devolve un se o elemento está na táboa hash e 0 en caso contrario
 int busca(taboaHash *t, char *chave){
 
     int pos = hash(chave); //Calculamos o valor hash do lexema
@@ -91,7 +92,68 @@ int busca(taboaHash *t, char *chave){
 
     while(celda!=NULL && celda->lexema!=NULL){ //Iteramos polas celdas ata atopar o lexema que buscamos
         if(strcmp(celda->lexema, chave)==0){
-            return celda->componhenteLexico;
+            return 1;
+        }
+        else{
+            celda = celda->seguinte;
+        }
+    }
+    return 0;
+}
+
+
+//Función que devolve o valor numérico asociado ó lexema
+double buscaValor(taboaHash *t, char *chave){
+
+    int pos = hash(chave); //Calculamos o valor hash do lexema
+
+    struct celda *celda = t->hash[pos];
+
+    while(celda!=NULL && celda->lexema!=NULL){ //Iteramos polas celdas ata atopar o lexema que buscamos
+        if(strcmp(celda->lexema, chave)==0){
+            return celda->valor;
+        }
+        else{
+            celda = celda->seguinte;
+        }
+    }
+    return 0;
+}
+
+//Función que devolve o compoñente léxico asociado ó lexema
+double modificaValor(taboaHash *t, char *chave, double valor, void *ptr){
+
+    int pos = hash(chave); //Calculamos o valor hash do lexema
+
+    struct celda *celda = t->hash[pos];
+
+    while(celda!=NULL && celda->lexema!=NULL){ //Iteramos polas celdas ata atopar o lexema que buscamos
+        if(strcmp(celda->lexema, chave)==0) {
+            //Relízase unha comprobación de se estamos intentando modificar unha constante
+            if (celda->ptr == NULL) {
+                celda->valor = valor;
+                celda->ptr = ptr;
+            }
+            return 0;
+        }
+        else{
+            celda = celda->seguinte;
+        }
+    }
+    insertarHash(t, chave, valor, ptr);
+    return 0;
+}
+
+//Función que devolve a función asociada ó lexema
+void * buscaFuncion(taboaHash *t, char *chave){
+
+    int pos = hash(chave); //Calculamos o valor hash do lexema
+
+    struct celda *celda = t->hash[pos];
+
+    while(celda!=NULL && celda->lexema!=NULL){ //Iteramos polas celdas ata atopar o lexema que buscamos
+        if(strcmp(celda->lexema, chave)==0){
+            return celda->ptr;
         }
         else{
             celda = celda->seguinte;
@@ -101,17 +163,20 @@ int busca(taboaHash *t, char *chave){
 }
 
 //Función que inserta un lexema na táboa hash
-void insertarHash (taboaHash *t, char* lexema, int componhente){
+void insertarHash (taboaHash *t, char* lexema, double valor, void *ptr){
     int pos; //Posición na que se vai insertar o elemento
     pos =hash(lexema); //Calculamos a posición da táboa na que se insertaría o elemento
     struct celda *celda = t->hash[pos]; //Creamos un punteiro á primeira celda da lista enlazada da posición hash
     struct celda *celdaInsertar; //Creamos a nova celda co novo elemento a insertar
 
     //Se a primeira celda está baleira insertamos aí o elemento
-    if(celda->componhenteLexico==0){
+    if(celda->lexema==NULL){
         celda->lexema=(char*)malloc((strlen(lexema)+1)*sizeof(char));
         strcpy(celda->lexema, lexema);
-        celda->componhenteLexico=componhente;
+        celda->valor=valor;
+        if(ptr!=NULL) {
+            celda->ptr = ptr;
+        }
     }
 
     //Se a primeira celda non está baleira
@@ -121,7 +186,10 @@ void insertarHash (taboaHash *t, char* lexema, int componhente){
         celdaInsertar->lexema=(char*)malloc((strlen(lexema)+1)*sizeof(char));
         strcpy(celdaInsertar->lexema, lexema);
         celdaInsertar->seguinte=NULL;
-        celdaInsertar->componhenteLexico=componhente;
+        celdaInsertar->valor=valor;
+        if(ptr!=NULL) {
+            celdaInsertar->ptr = ptr;
+        }
 
         //Cando atopemos o último elemento da lista enlazada insertamos a nova celda
         while(celda->seguinte!=NULL){
@@ -140,7 +208,7 @@ void imprimirTaboaHash(taboaHash *t){
     for(i=0; i<tamhash; i++){
         celda=t->hash[i];
         //Se a celda está baleira, non a imprimimos
-        if(celda->componhenteLexico!=0){
+        if(celda->lexema!=NULL){
             printf("%i --> %s\n", i, celda->lexema);
             while(celda->seguinte!=NULL){
                 celda = celda->seguinte;

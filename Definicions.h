@@ -3,7 +3,8 @@
 #ifndef COMPILADORGO_DEFINICIONS_H
 #define COMPILADORGO_DEFINICIONS_H
 
-#define tam 64 //Tamanho do buffer
+#define PI 3.14159265358979323846
+#define E 2.71828182845904523536
 
 //      $   10
 
@@ -87,7 +88,6 @@
 #define INTEGER 401
 #define FLOAT 402
 #define IMAGINARY 403
-#define IDENTIFIER 500
 
 //
 

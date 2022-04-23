@@ -16,4 +16,7 @@ void lerEntrada(char* entrada);
 //Función que pecha o ficheiro de lectura
 void pecharFicheiro();
 
+//Función que devolve o lexema actual
+extern int yylex (void);
+
 #endif //COMPILADORGO_LEX_YY_H

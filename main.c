@@ -1,4 +1,4 @@
-#include "AnaSintactico.h"
+#include "go.tab.h"
 #include "TaboaSimbolos.h"
 #include "lex.yy.h"
 #include <stdio.h>
@@ -10,7 +10,8 @@
 char * lerConsola(){
     char * entrada = (char *) malloc(MAX_ENTRADA * sizeof(char));
     printf("\n> ");
-    scanf("%s", entrada);
+    //Leer linea completa de la consola
+    fgets(entrada, MAX_ENTRADA, stdin);
     return entrada;
 }
 
@@ -18,16 +19,16 @@ int main(){
 
     char* entrada;
 
-    inicializarTS(); //Inicializamos a táboa de símbolos
+    inicializaTS(); //Inicializamos a táboa de símbolos
     //imprimeTS(); //Imprimimos o contido da táboa de símbolos ó iniciar a execución
     do {
         entrada=lerConsola();
-        lerEntrada(entrada); //Abrimos o ficheiro
-        analizarSintacticamente(); //Comezamos a análise sintáctica
+        lerEntrada(entrada); //Abrimos a entrada
+        yyparse(); //Comezamos a análise sintáctica
     }
     while(strcmp(entrada, ";")!=0);
     //imprimeTS(); //Imprimimos o contido da táboa de símbolos ó finalizar a execución
-    eliminarTS(); //Eliminamos a táboa de símbolos
+    eliminaTS(); //Eliminamos a táboa de símbolos
     pecharFicheiro(); //Pechamos o ficheiro
 }
 

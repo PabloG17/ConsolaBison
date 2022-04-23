@@ -16,4 +16,10 @@ void erro(char* info, int codigo){
     if(codigo==LEXEMANONRECONHECIDO){
         printf(VERMELLO"\nNon se reconheceu o lexema %s\n" RESET, info);
     }
+    if(codigo==NUMARGUMENTOSINVALIDO){
+        printf(VERMELLO"\nO número de argumentos é incorrecto: %s\n" RESET, info);
+    }
+    if(codigo==FUNCIONNONEXISTE){
+        printf(VERMELLO"\nA seguinte función non existe: %s\n" RESET, info);
+    }
 }
