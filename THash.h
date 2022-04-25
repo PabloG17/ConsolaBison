@@ -22,6 +22,12 @@ int busca(struct taboaHash *t, char *chave);
 //Función que devolve a función asociada a un lexema
 void * buscaFuncion(struct taboaHash *t, char *chave);
 
+//Función que devolve unha lista de elementos almacenados polo usuario na táboa hash e os seus valores
+void workspaceHash(struct taboaHash *t, double **val, char ***chaves);
+
+//Función que devolve unha lista de elementos almacenados polo usuario na táboa hash
+void workspaceHashSV(struct taboaHash *t, char ***chaves);
+
 //Función que inserta un valor na táboa hash
 void insertarHash (struct taboaHash *t, char* lexema, double componhente, void *ptr);
 
@@ -30,5 +36,11 @@ void imprimirTaboaHash(struct taboaHash *t);
 
 //Función que destrue unha táboa hash
 void destruirHash(struct taboaHash *t);
+
+//Función que destrúe unha celda da táboa hash
+void buscaEDestrue(struct taboaHash *t, char *chave);
+
+//Función que devolve o número de variables introducidas na táboa hash
+int numVariablesDefinidas();
 
 #endif //COMPILADORGO_THASH_H

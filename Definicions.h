@@ -3,6 +3,12 @@
 #ifndef COMPILADORGO_DEFINICIONS_H
 #define COMPILADORGO_DEFINICIONS_H
 
+
+//Cores para a impresión
+#define VERMELLO        "\x1b[31m"
+#define RESET           "\x1b[0m"
+#define AZUL            "\x1b[34m"
+
 #define PI 3.14159265358979323846
 #define E 2.71828182845904523536
 
@@ -84,7 +90,7 @@
 #define TYPE 323
 #define VAR 324
 
-#define STRING 400
+
 #define INTEGER 401
 #define FLOAT 402
 #define IMAGINARY 403

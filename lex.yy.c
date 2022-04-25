@@ -1013,7 +1013,7 @@ return(',');
 case 46:
 YY_RULE_SETUP
 #line 146 "go.l"
-return(76);
+return(';');
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
@@ -1060,7 +1060,7 @@ return(0);
 case 55:
 YY_RULE_SETUP
 #line 157 "go.l"
-return(STRING);
+{yylval.lex = (char *) malloc(sizeof (yytext));yylval.lex = strdup(yytext);return(STRING);}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP

@@ -143,7 +143,7 @@ e os valores que non se enmarcan en ningunha destas expresións son tratados com
 {OPEN_BRACE}        return(73);
 {CLOSE_BRACE}       return(74);
 {COMMA}             return(',');
-{SEMICOLON}         return(76);
+{SEMICOLON}         return(';');
 {DOT}               return('.');
 {COLON}             return(78);
 
@@ -154,7 +154,7 @@ e os valores que non se enmarcan en ningunha destas expresións son tratados com
 {LINE_COMMENT}      return(0);
 {BLOCK_COMMENT}      return(0);
 
-{STRING_LITERAL}    return(STRING);
+{STRING_LITERAL}    {yylval.lex = (char *) malloc(sizeof (yytext));yylval.lex = strdup(yytext);return(STRING);}
 {INT_LITERAL}       {yylval.val=atof(yytext);return(NUM);}
 {FLOAT_LITERAL}     {yylval.val=atof(yytext);return(NUM);}
 {IDENTIFIER}        {yylval.lex = (char *) malloc(sizeof (yytext));yylval.lex = strdup(yytext); return (IDENTIFIER);}

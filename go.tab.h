@@ -56,7 +56,8 @@ extern int yydebug;
     YYUNDEF = 257,                 /* "invalid token"  */
     NUM = 258,                     /* NUM  */
     IDENTIFIER = 259,              /* IDENTIFIER  */
-    END = 260                      /* END  */
+    STRING = 260,                  /* STRING  */
+    END = 261                      /* END  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -65,13 +66,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 12 "go.y"
+#line 22 "go.y"
 
 double val;
 char *ptr;
 char *lex;
 
-#line 75 "go.tab.h"
+#line 76 "go.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -19,6 +19,9 @@ void* buscaFuncionTS(char* chave);
 //Función que busca un lexema na táboa de símbolos e modifica os seus valores
 double modificaValorTS(char *chave, double valor, void *ptr);
 
+//Función que executa unha función alamacenada na táboa de símbolos sen argumentos
+double executaFuncion0TS(char *chave, int* codErro);
+
 //Función que executa unha función almacenada na táboa de símbolos
 double executaFuncionTS(char *chave, double valor, int* codErro);
 
@@ -26,9 +29,21 @@ double executaFuncionTS(char *chave, double valor, int* codErro);
 double executaFuncion2TS(char *chave, double valor, double valor2, int* codErro);
 
 //Función que executa unha función almacenada na táboa de símbolos que ten como argumento un identificador
-double executaFuncionIDTS(char *chave, char* valor);
+double executaFuncionIDTS(char *chave, char* valor, int* codErro);
 
 //Función que imprime a táboa de símbolos
 void imprimeTS();
+
+//Función que devolve as variables almacenadas polo usuario na táboa de símbolos e os seus valores
+void workspaceTS(double **val, char ***chaves);
+
+//Función que devolve as variables almacenadas polo usuario na táboa de símbolos e os seus valores
+void workspaceSVTS(char ***chaves);
+
+//Función que devolve o número de variables definidas ata o momento
+int numVariablesDefinidasTS();
+
+//Función que libera unha determinada posición da táboa de símbolos
+void buscaEDestrueTS(char *chave);
 
 #endif //COMPILADORGO_TABOASIMBOLOS_H

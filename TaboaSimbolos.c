@@ -9,10 +9,6 @@
 #define tamhash 1024 //Número de entradas da táboa hash
 #define numIdentificadores 500 //Número identificador dos identificadores
 
-//Cores para a impresión
-#define AZUL            "\x1b[36m"
-#define RESET           "\x1b[0m"
-
 struct taboaHash *taboaSimbolos; //Declaramos a táboa de símbolos como unha táboa hash
 
 //Inicializamos a táboa de símbolos
@@ -26,8 +22,8 @@ void inicializaTS(){
     for(i=0; i<FUNCIONS; i++){
         insertarHash(taboaSimbolos, funcions[i].nome, 0, funcions[i].func);
     }
-    insertarHash(taboaSimbolos, "PI", PI, (void*)2);
-    insertarHash(taboaSimbolos, "E", E, (void*)2);
+    insertarHash(taboaSimbolos, "pi", PI, (void*)2);
+    insertarHash(taboaSimbolos, "e", E, (void*)2);
 
     //Insertamos todas as palabras chave
     /*
@@ -87,6 +83,29 @@ double modificaValorTS(char *chave, double valor, void *ptr){
     return modificaValor(taboaSimbolos, chave, valor, ptr);
 }
 
+//Función que executa unha función almacenada na táboa de símbolos sen argumentos
+double executaFuncion0TS(char *chave, int* codErro){
+    void *ptr;
+    int i=0; //Variable de iteración
+
+    for(i=0;i<FUNCIONS; i++){
+        if(strcmp(funcions[i].nome, chave)==0){
+            if(funcions[i].args==0){
+                ptr=buscaFuncionTS(chave);
+                return ((double (*)())ptr)();
+            }
+            else{
+                erro("A función á que se quere chamar ten 0 argumentos",NUMARGUMENTOSINVALIDO);
+                *codErro=NUMARGUMENTOSINVALIDO;
+                return(0);
+            }
+        }
+    }
+    erro(chave, FUNCIONNONEXISTE);
+    *codErro=FUNCIONNONEXISTE;
+    return(0);
+}
+
 //Función que executa unha función almacenada na táboa de símbolos
 double executaFuncionTS(char *chave, double valor, int* codErro){
     void *ptr;
@@ -134,10 +153,21 @@ double executaFuncion2TS(char *chave, double valor, double valor2, int* codErro)
 }
 
 //Función que executa unha función almacenada na táboa de símbolos que ten como argumento un identificador
-double executaFuncionIDTS(char *chave, char* valor){
+double executaFuncionIDTS(char *chave, char* valor, int* codErro){
     void *ptr;
     ptr=buscaFuncionTS(chave);
+    *codErro=1;
     return ((double (*)(char*))ptr)(valor);
+}
+
+//Función que devolve as variables almacenadas polo usuario na táboa de símbolos e os seus valores
+void workspaceTS(double **val, char ***chaves){
+    return workspaceHash(taboaSimbolos,val, chaves);
+}
+
+//Función que devolve as variables almacenadas polo usuario na táboa de símbolos
+void workspaceSVTS(char ***chaves){
+    return workspaceHashSV(taboaSimbolos, chaves);
 }
 
 //Función que imprime a táboa de símbolos
@@ -145,4 +175,13 @@ void imprimeTS(){
     printf(AZUL"-----------------------CONTIDO DA TABOA DE SÍMBOLOS-----------------------\n");
     imprimirTaboaHash(taboaSimbolos);
     printf("-------------------------------------------------------------------------\n"RESET);
+}
+
+int numVariablesDefinidasTS(){
+    return numVariablesDefinidas();
+}
+
+//Función que libera unha determinada posición da táboa de símbolos
+void buscaEDestrueTS(char *chave){
+    buscaEDestrue(taboaSimbolos, chave);
 }

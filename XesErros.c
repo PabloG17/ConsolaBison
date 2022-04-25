@@ -1,10 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "XesErros.h"
-
-//Cores para a impresión
-#define VERMELLO        "\x1b[31m"
-#define RESET           "\x1b[0m"
+#include "Definicions.h"
 
 //Función que informa dun erro por pantalla
 void erro(char* info, int codigo){

@@ -5,6 +5,8 @@
 
 #define tamhash 128 //Número de entradas da táboa hash
 
+int variablesDefinidas = 0;
+
 //Cada un dos compoñentes da táboa hash
 typedef struct celda{
     char *lexema;
@@ -31,6 +33,9 @@ celda* inicializarCelda(){
 //Función que libera a memoria unha celda
 void destruirCelda(celda *c){
     free(c->lexema);
+    c->lexema = NULL;
+    c->ptr = NULL;
+    c->seguinte = NULL;
 }
 
 //Función que libera a memoria dunha táboa hash
@@ -134,7 +139,7 @@ double modificaValor(taboaHash *t, char *chave, double valor, void *ptr){
                 celda->valor = valor;
                 celda->ptr = ptr;
             }
-            return 0;
+            return 1;
         }
         else{
             celda = celda->seguinte;
@@ -177,6 +182,9 @@ void insertarHash (taboaHash *t, char* lexema, double valor, void *ptr){
         if(ptr!=NULL) {
             celda->ptr = ptr;
         }
+        else{
+            variablesDefinidas++;
+        }
     }
 
     //Se a primeira celda non está baleira
@@ -190,12 +198,54 @@ void insertarHash (taboaHash *t, char* lexema, double valor, void *ptr){
         if(ptr!=NULL) {
             celdaInsertar->ptr = ptr;
         }
+        else{
+            variablesDefinidas++;
+        }
 
         //Cando atopemos o último elemento da lista enlazada insertamos a nova celda
         while(celda->seguinte!=NULL){
             celda = celda->seguinte;
         }
         celda->seguinte = celdaInsertar;
+    }
+}
+
+//Función que devolve unha lista de elementos almacenados polo usuario na táboa hash e os seus valores
+void workspaceHash(struct taboaHash *t, double **val, char ***chaves){
+    int i;
+    int j=0;
+    struct celda *celda;
+
+    //Recorremos a táboa hash en busca das variables
+    for(i=0;i<tamhash;i++){
+        celda = t->hash[i];
+        while(celda!=NULL && celda->lexema!=NULL){
+            if(celda->ptr==NULL){
+                val[j] = &celda->valor;
+                chaves[j] = &celda->lexema;
+                j++;
+            }
+            celda = celda->seguinte;
+        }
+    }
+}
+
+//Función que devolve unha lista de elementos almacenados polo usuario na táboa hash
+void workspaceHashSV(struct taboaHash *t, char ***chaves){
+    int i;
+    int j=0;
+    struct celda *celda;
+
+    //Recorremos a táboa hash en busca das variables
+    for(i=0;i<tamhash;i++){
+        celda = t->hash[i];
+        while(celda!=NULL && celda->lexema!=NULL){
+            if(celda->ptr==NULL){
+                chaves[j] = &celda->lexema;
+                j++;
+            }
+            celda = celda->seguinte;
+        }
     }
 }
 
@@ -214,6 +264,35 @@ void imprimirTaboaHash(taboaHash *t){
                 celda = celda->seguinte;
                 printf("\t--> %s\n", celda->lexema);
             }
+        }
+    }
+}
+
+int numVariablesDefinidas(){
+    return variablesDefinidas;
+}
+
+//Función que devolve o valor numérico asociado ó lexema
+void buscaEDestrue(taboaHash *t, char *chave){
+
+    int pos = hash(chave); //Calculamos o valor hash do lexema
+
+    struct celda *celda = t->hash[pos];
+    struct celda *celdaAnterior = NULL;
+
+    while(celda!=NULL && celda->lexema!=NULL){ //Iteramos polas celdas ata atopar o lexema que buscamos
+        if(strcmp(celda->lexema, chave)==0){
+            if(celda->ptr==NULL) {
+                if(celda->seguinte!=NULL){
+                    celdaAnterior->seguinte = celda->seguinte;
+                }
+                destruirCelda(celda);
+                variablesDefinidas--;
+            }
+        }
+        else{
+            celdaAnterior = celda;
+            celda = celda->seguinte;
         }
     }
 }

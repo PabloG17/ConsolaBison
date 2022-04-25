@@ -5,6 +5,7 @@
 #define LEXEMANONRECONHECIDO 01
 #define NUMARGUMENTOSINVALIDO 02
 #define FUNCIONNONEXISTE 03
+#define SILENCIO 04
 
 
 //Función que informa dun erro por pantalla

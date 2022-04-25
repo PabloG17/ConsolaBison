@@ -1,10 +1,9 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
-#include "lex.yy.h"
-#include "go.tab.h"
+#ifndef COMPILADORGO_FUNCIONS_H
+#define COMPILADORGO_FUNCIONS_H
 
-#define FUNCIONS 16
+#include <math.h>
+
+#define FUNCIONS 22
 
 typedef struct {
     char *nome;
@@ -12,24 +11,26 @@ typedef struct {
     int args;
 } Funcion;
 
-double load(char* nomeFicheiro){
+//Función que sirve para cargar as operacións dende un ficheiro externo
+double load(char* nomeFicheiro);
 
-    FILE *fp;
-    char linha[256];
-    fp = fopen(nomeFicheiro, "r");
-    if(fp == NULL){
-        printf("Erro ó abrir o ficheiro\n");
-    }
-    else{
-        while(fgets(linha, sizeof(linha), fp)){
-            printf("%s", linha);
-        }
-    }
-    return 0;
-}
+//Función que serve para imprimir todas as variables que están na memoria
+double workspace();
 
+//Función que serve para eliminar as variables da memoria
+double clear();
 
-Funcion funcions[]={
+//Función que serve para cambiar o estado do sistema e pechalo
+double sair();
+
+//Función que imprime mensaxes de axuda
+double help();
+
+double print(double num);
+
+double saida(char* str);
+
+static Funcion funcions[]={
         "sin", sin, 1,
         "cos", cos, 1,
         "tan", tan, 1,
@@ -45,5 +46,13 @@ Funcion funcions[]={
         "round", round, 1,
         "trunc", trunc, 1,
         "load", load, 1,
-        "pow", pow , 2
+        "pow", pow , 2,
+        "workspace", workspace, 0,
+        "clear", clear, 0,
+        "exit", sair, 0,
+        "help", help, 0,
+        "print", print, 1,
+        "echo", saida, 1,
 };
+
+#endif //COMPILADORGO_FUNCIONS_H
