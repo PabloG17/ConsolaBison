@@ -28,6 +28,7 @@ double help();
 
 double print(double num);
 
+//Función que serve para cambiar o estado do sistema e pechalo
 double saida(char* str);
 
 static Funcion funcions[]={
@@ -52,7 +53,7 @@ static Funcion funcions[]={
         "exit", sair, 0,
         "help", help, 0,
         "print", print, 1,
-        "echo", saida, 1,
+        "echo", saida, 1
 };
 
 #endif //COMPILADORGO_FUNCIONS_H

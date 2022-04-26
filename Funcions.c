@@ -4,38 +4,45 @@
 #include <string.h>
 #include "Definicions.h"
 #include "lex.yy.h"
+#include "FuncionsBison.h"
 #include "TaboaSimbolos.h"
 
 //Función que sirve para cargar as operacións dende un ficheiro externo
 double load(char* nomeFicheiro){
 
-    FILE *fp;
-    char linha[256];
-    char *token;
+    FILE *fp; //Ficheiro que vai ser aberto
+    char linha[256]; //Cadea que vai ser lida
 
     //Eliminamos as comillas do nome do ficheiro
     nomeFicheiro = strtok(nomeFicheiro, "\"");
     fp = fopen(nomeFicheiro, "r");
+    //Observamos se o ficheiro se puido abrir
     if(fp == NULL){
         printf("Erro ó abrir o ficheiro %s\n", nomeFicheiro);
+        return 0;
     }
+    //Vemos se o ficheiro xa está aberto
     else if(comprobarFicheiro(nomeFicheiro)){
+        //Marcamos o ficheiro como aberto
         establecerFicheiro(nomeFicheiro);
         printf("\n"); //Escribimos un salto de linha para separar no caso de que se lean varios ficheiros de forma encadeada
         while(fgets(linha, sizeof(linha), fp)){
+            if(linha[strlen(linha)-1] != '\n'){
+                strcat(linha, "\n"); //Se a linha non ten salto de linha, engadimos un
+            }
             printf("> %s", linha);
-            strcat(linha, "\n"); //Engadimos un retorno de carro para asegurar que todas as liñas son válidas
+            //Executamos a linha lida
             pseudoExecucion(linha);
         }
         printf("\nFicheiro %s lido con éxito\n", nomeFicheiro);
         liberarFicheiro();
         //Escribimos un salto de liña ó final para abrir unha nova liña na consola
-        lerEntrada("\n");
+        lerEntrada("\n", 0);
     }
     else{
         printf("\nIntentouse facer unha lectura de ficheiros recursiva!\n");
     }
-    return 0;
+    return 1;
 }
 
 //Función que serve para imprimir todas as variables que están na memoria
@@ -43,8 +50,8 @@ double workspace(){
 
     int i; //Variable de iteración
     int num=numVariablesDefinidasTS(); //Número de variables definidas
-    double **valores;
-    char ***chaves;
+    double **valores; //Valores das variables
+    char ***chaves; //Nomes das variables
 
     if(num!=0) {
 
@@ -75,16 +82,17 @@ double clear(){
 
     int i; //Variable de iteración
     int num=numVariablesDefinidasTS(); //Número de variables definidas
-    char ***chaves;
+    char ***chaves; //Nomes das variables
 
     if(num!=0) {
 
+        //Reservamos memoria para as variables
         chaves = (char ***) malloc(num * sizeof(char **));
 
         //Calculamos o número de variables a imprimir e recollémolas
         workspaceSVTS(chaves);
 
-        //Imprimimos as variables
+        //Destruímos as variables
         for (i = 0; i < num; i++) {
             buscaEDestrueTS(*chaves[i]);
         }
@@ -95,8 +103,6 @@ double clear(){
     else{
         printf("Non hai variables definidas\n");
     }
-
-
 }
 
 //Función que serve para cambiar o estado do sistema e pechalo
@@ -121,20 +127,26 @@ double help(){
 
 }
 
+//Función que imprime o valor dunha variable
 double print(double num){
     return num;
 }
 
+
+//Función que regula se a operación produce saída ou non
 double saida(char* str){
     if(str!=NULL){
         if(strcmp(str,"\"on\"")==0){
             cambiarEcho(1);
+            return 1;
         }
         else if(strcmp(str,"\"off\"")==0){
             cambiarEcho(0);
+            return 1;
         }
         else{
             printf("Esa opción non existe. Introduce \"on\" ou \"off\"\n");
+            return 0;
         }
     }
 }

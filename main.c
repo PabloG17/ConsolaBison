@@ -1,4 +1,5 @@
 #include "go.tab.h"
+#include "FuncionsBison.h"
 #include "TaboaSimbolos.h"
 #include "lex.yy.h"
 #include <stdio.h>
@@ -17,7 +18,7 @@ char * lerConsola(){
 
 int main(int argc, char **argv){
 
-    char* entrada;
+    char* entrada=NULL;
 
     inicializaTS(); //Inicializamos a táboa de símbolos
     inicializarSistema(); //Inicializamos o sistema de lectura
@@ -28,12 +29,15 @@ int main(int argc, char **argv){
     }
     do {
         entrada = lerConsola();
-        lerEntrada(entrada); //Abrimos a entrada
+        lerEntrada(entrada, 1); //Abrimos a entrada
         yyparse(); //Comezamos a análise sintáctica
+
     } while (verEstado() == 0);
+
 
     //imprimeTS(); //Imprimimos o contido da táboa de símbolos ó finalizar a execución
     eliminaTS(); //Eliminamos a táboa de símbolos
-    pecharFicheiro(); //Pechamos o ficheiro
+    liberarFlex(); //Liberamos a memoria almacenada por flex
+    liberarBison(); //Liberamos a memoria almacenada por bison
 }
 

@@ -116,7 +116,7 @@ double buscaValor(taboaHash *t, char *chave){
 
     while(celda!=NULL && celda->lexema!=NULL){ //Iteramos polas celdas ata atopar o lexema que buscamos
         if(strcmp(celda->lexema, chave)==0){
-            return celda->valor;
+            return celda->valor; //Cando atopamos o elemento, devolvemos o seu valor
         }
         else{
             celda = celda->seguinte;
@@ -158,13 +158,13 @@ void * buscaFuncion(taboaHash *t, char *chave){
 
     while(celda!=NULL && celda->lexema!=NULL){ //Iteramos polas celdas ata atopar o lexema que buscamos
         if(strcmp(celda->lexema, chave)==0){
-            return celda->ptr;
+            return celda->ptr; //Devolvemos o punteiro á función asociada
         }
         else{
             celda = celda->seguinte;
         }
     }
-    return 0;
+    return NULL;
 }
 
 //Función que inserta un lexema na táboa hash
@@ -220,6 +220,7 @@ void workspaceHash(struct taboaHash *t, double **val, char ***chaves){
     for(i=0;i<tamhash;i++){
         celda = t->hash[i];
         while(celda!=NULL && celda->lexema!=NULL){
+            //Se a celda non lle pertence a unha función nin a unha constante, engadímos os seus datos
             if(celda->ptr==NULL){
                 val[j] = &celda->valor;
                 chaves[j] = &celda->lexema;
@@ -240,6 +241,7 @@ void workspaceHashSV(struct taboaHash *t, char ***chaves){
     for(i=0;i<tamhash;i++){
         celda = t->hash[i];
         while(celda!=NULL && celda->lexema!=NULL){
+            //Se a celda non lle pertence a unha función nin a unha constante, engadímos os seus datos
             if(celda->ptr==NULL){
                 chaves[j] = &celda->lexema;
                 j++;
@@ -268,6 +270,7 @@ void imprimirTaboaHash(taboaHash *t){
     }
 }
 
+//Función que devolve o número de variables introducidas na táboa hash
 int numVariablesDefinidas(){
     return variablesDefinidas;
 }
@@ -282,10 +285,13 @@ void buscaEDestrue(taboaHash *t, char *chave){
 
     while(celda!=NULL && celda->lexema!=NULL){ //Iteramos polas celdas ata atopar o lexema que buscamos
         if(strcmp(celda->lexema, chave)==0){
+            //Se a celda que buscamos é a dunha variable, destruímola
             if(celda->ptr==NULL) {
+                //Enlazamos a celda anterior coa seguinte
                 if(celda->seguinte!=NULL){
                     celdaAnterior->seguinte = celda->seguinte;
                 }
+                //Destruimos a celda e diminuímos en un o número de variables definidas
                 destruirCelda(celda);
                 variablesDefinidas--;
             }

@@ -25,37 +25,6 @@ void inicializaTS(){
     insertarHash(taboaSimbolos, "pi", PI, (void*)2);
     insertarHash(taboaSimbolos, "e", E, (void*)2);
 
-    //Insertamos todas as palabras chave
-    /*
-    insertarHash(taboaSimbolos, "break", BREAK);
-    insertarHash(taboaSimbolos, "case", CASE);
-    insertarHash(taboaSimbolos, "chan", CHAN);
-    insertarHash(taboaSimbolos, "const", CONST);
-    insertarHash(taboaSimbolos, "continue", CONTINUE);
-    insertarHash(taboaSimbolos, "default", DEFAULT);
-    insertarHash(taboaSimbolos, "defer", DEFER);
-    insertarHash(taboaSimbolos, "else", ELSE);
-    insertarHash(taboaSimbolos, "fallthrough", FALLTHROUGH);
-    insertarHash(taboaSimbolos, "for", FOR);
-    insertarHash(taboaSimbolos, "func", FUNC);
-    insertarHash(taboaSimbolos, "go", GO);
-    insertarHash(taboaSimbolos, "goto", GOTO);
-    insertarHash(taboaSimbolos, "if", IF);
-    insertarHash(taboaSimbolos, "import", IMPORT);
-    insertarHash(taboaSimbolos, "interface", INTERFACE);
-    insertarHash(taboaSimbolos, "map", MAP);
-    insertarHash(taboaSimbolos, "package", PACKAGE);
-    insertarHash(taboaSimbolos, "range", RANGE);
-    insertarHash(taboaSimbolos, "return", RETURN);
-    insertarHash(taboaSimbolos, "select", SELECT);
-    insertarHash(taboaSimbolos, "struct", STRUCT);
-    insertarHash(taboaSimbolos, "switch", SWITCH);
-    insertarHash(taboaSimbolos, "type", TYPE);
-    insertarHash(taboaSimbolos, "var", VAR);
-
-    */
-
-
 }
 
 
@@ -88,12 +57,15 @@ double executaFuncion0TS(char *chave, int* codErro){
     void *ptr;
     int i=0; //Variable de iteración
 
+    //Buscamos as funcións entre a lista e vemos se ten o número adecuado de argumentos
     for(i=0;i<FUNCIONS; i++){
         if(strcmp(funcions[i].nome, chave)==0){
             if(funcions[i].args==0){
+                //Se a función existe e os argumentos coinciden, invocámola
                 ptr=buscaFuncionTS(chave);
                 return ((double (*)())ptr)();
             }
+            //En caso contrario, sacamos unha mensaxe de erro
             else{
                 erro("A función á que se quere chamar ten 0 argumentos",NUMARGUMENTOSINVALIDO);
                 *codErro=NUMARGUMENTOSINVALIDO;
@@ -111,14 +83,17 @@ double executaFuncionTS(char *chave, double valor, int* codErro){
     void *ptr;
     int i=0; //Variable de iteración
 
+    //Buscamos as funcións entre a lista e vemos se ten o número adecuado de argumentos
     for(i=0;i<FUNCIONS; i++){
         if(strcmp(funcions[i].nome, chave)==0){
             if(funcions[i].args==1){
+                //Se a función existe e os argumentos coinciden, invocámola
                 ptr=buscaFuncionTS(chave);
                 return ((double (*)(double))ptr)(valor);
             }
+                //En caso contrario, sacamos unha mensaxe de erro
             else{
-                erro("A función á que se quere chamar ten 2 argumentos",NUMARGUMENTOSINVALIDO);
+                erro("A función á que se quere chamar ten 1 argumento",NUMARGUMENTOSINVALIDO);
                 *codErro=NUMARGUMENTOSINVALIDO;
                 return(0);
             }
@@ -134,14 +109,17 @@ double executaFuncion2TS(char *chave, double valor, double valor2, int* codErro)
     void *ptr;
     int i; //Variable de iteración
 
+    //Buscamos as funcións entre a lista e vemos se ten o número adecuado de argumentos
     for(i=0;i<FUNCIONS; i++){
         if(strcmp(funcions[i].nome, chave)==0){
             if(funcions[i].args==2){
+                //Se a función existe e os argumentos coinciden, invocámola
                 ptr=buscaFuncionTS(chave);
                 return ((double (*)(double, double))ptr)(valor, valor2);
             }
+                //En caso contrario, sacamos unha mensaxe de erro
             else{
-                erro("A función á que se quere chamar ten 1 argumento",NUMARGUMENTOSINVALIDO);
+                erro("A función á que se quere chamar ten 2 argumentos",NUMARGUMENTOSINVALIDO);
                 *codErro=NUMARGUMENTOSINVALIDO;
                 return(0);
             }
@@ -154,10 +132,29 @@ double executaFuncion2TS(char *chave, double valor, double valor2, int* codErro)
 
 //Función que executa unha función almacenada na táboa de símbolos que ten como argumento un identificador
 double executaFuncionIDTS(char *chave, char* valor, int* codErro){
+
     void *ptr;
-    ptr=buscaFuncionTS(chave);
-    *codErro=1;
-    return ((double (*)(char*))ptr)(valor);
+    int i; //Variable de iteración
+
+    //Buscamos as funcións entre a lista e vemos se ten o número adecuado de argumentos
+    for(i=0;i<FUNCIONS; i++){
+        if(strcmp(funcions[i].nome, chave)==0){
+            if(funcions[i].args==1){
+                //Se a función existe e os argumentos coinciden, invocámola
+                ptr=buscaFuncionTS(chave);
+                return ((double (*)(char*))ptr)(valor);
+            }
+                //En caso contrario, sacamos unha mensaxe de erro
+            else{
+                erro("A función á que se quere chamar ten 1 argumento",NUMARGUMENTOSINVALIDO);
+                *codErro=NUMARGUMENTOSINVALIDO;
+                return(0);
+            }
+        }
+    }
+    erro(chave, FUNCIONNONEXISTE);
+    *codErro=FUNCIONNONEXISTE;
+    return(0);
 }
 
 //Función que devolve as variables almacenadas polo usuario na táboa de símbolos e os seus valores
@@ -177,6 +174,7 @@ void imprimeTS(){
     printf("-------------------------------------------------------------------------\n"RESET);
 }
 
+//Función que devolve o número de variables definidas ata o momento
 int numVariablesDefinidasTS(){
     return numVariablesDefinidas();
 }

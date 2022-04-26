@@ -19,7 +19,6 @@ TAB               \t
 SPACE             [ ]
 RETURN            \r
 LINE_COMMENT      \/\/.*
-BLOCK_COMMENT     \/\*(.|\n)*?\*\/
 
 UNICODE_CHAR      .
 UNICODE_LETTER    [A-Za-z]
@@ -47,7 +46,6 @@ GREATER_THAN_EQUAL >=
 AND               &
 OR                \|
 NOT               !
-ASSIGN            =
 OPEN_PAREN        \(
 CLOSE_PAREN       \)
 OPEN_BRACKET      \[
@@ -77,24 +75,21 @@ XOR               \^
 AND_XOR           &\^
 AND_XOR_EQUAL     &\^=
 DEFINITION        :=
-ASSINGMENT        <-
+ASSINGMENT        =
 COLON             :
 TILDE             ~
 THREE_DOTS        \.\.\.
 
-
-
 DECIMAL_DIGITS    {DECIMAL_DIGIT}+
 INT_LITERAL       {DECIMAL_DIGITS}
-FLOAT_LITERAL     {DECIMAL_DIGITS}\.{DECIMAL_DIGITS}
+FLOAT_LITERAL     {DECIMAL_DIGITS}\.{DECIMAL_DIGITS}|{DECIMAL_DIGITS}[eE][+-]?{DECIMAL_DIGITS}
 
 RAW_STRING_LITERAL `(_|.)*`
 INTERPRETED_STRING_LITERAL \"(_|.)*\"
 STRING_LITERAL     {RAW_STRING_LITERAL}|{INTERPRETED_STRING_LITERAL}
 
 
-/* Definimos as regras devolvendo o valor correspondente a cada expresión. Os valores que devolven 0 son ignorados
-e os valores que non se enmarcan en ningunha destas expresións son tratados como erros. */
+/* Definimos as regras devolvendo o valor correspondente a cada expresión. */
 
 %%
 
@@ -106,53 +101,25 @@ e os valores que non se enmarcan en ningunha destas expresións son tratados com
 {AND}               return('&&');
 {OR}                return('||');
 {XOR}               return('^');
-{LEFT_SHIFT}        return(39);
-{RIGHT_SHIFT}       return(40);
-{AND_XOR}           return(41);
-{INCREMENT_EQUAL}   return(42);
-{DECREMENT_EQUAL}   return(43);
-{MULTIPLY_EQUAL}    return(44);
-{DIVIDE_EQUAL}      return(45);
-{MODULO_EQUAL}      return(46);
-{AND_EQUAL}         return(47);
-{OR_EQUAL}          return(48);
-{XOR_EQUAL}         return(49);
-{LEFT_SHIFT_EQUAL}  return(50);
-{RIGHT_SHIFT_EQUAL} return(51);
-{AND_XOR_EQUAL}     return(52);
-{AND_OP}            return(53);
-{OR_OP}             return(54);
 {ASSINGMENT}        return('=');
-{INCREMENT}         return('++');
-{DECREMENT}         return('--');
-{EQUAL}             return('==');
-{LESS_THAN}         return(59);
-{GREATER_THAN}      return(60);
-{ASSIGN}            return(61);
-{NOT}               return(62);
-{TILDE}             return(63);
-{NOT_EQUAL}         return(64);
-{LESS_THAN_EQUAL}   return(65);
-{GREATER_THAN_EQUAL}   return(66);
-{DEFINITION}        return(67);
-{THREE_DOTS}        return(68);
+{EQUAL}             return(EQ);
+{LESS_THAN}         return('<');
+{GREATER_THAN}      return('>');
+{NOT}               return('!');
+{NOT_EQUAL}         return(NE);
+{LESS_THAN_EQUAL}   return(LT);
+{GREATER_THAN_EQUAL}   return(GT);
 {OPEN_PAREN}        return('(');
 {CLOSE_PAREN}       return(')');
-{OPEN_BRACKET}      return(71);
-{CLOSE_BRACKET}     return(72);
-{OPEN_BRACE}        return(73);
-{CLOSE_BRACE}       return(74);
 {COMMA}             return(',');
 {SEMICOLON}         return(';');
 {DOT}               return('.');
-{COLON}             return(78);
 
 {NEWLINE}           return('\n');
 {TAB}
 {SPACE}
 {RETURN}
-{LINE_COMMENT}      return(0);
-{BLOCK_COMMENT}      return(0);
+{LINE_COMMENT}
 
 {STRING_LITERAL}    {yylval.lex = (char *) malloc(sizeof (yytext));yylval.lex = strdup(yytext);return(STRING);}
 {INT_LITERAL}       {yylval.val=atof(yytext);return(NUM);}
@@ -165,15 +132,18 @@ e os valores que non se enmarcan en ningunha destas expresións son tratados com
 
 
 //Función que abre o ficheiro de lectura, se non se pode abrir sacamos un erro
-void lerEntrada(char* entrada){
+void lerEntrada(char* entrada, int modo){
     yy_scan_string(entrada);
     if(entrada==NULL){
         printf("Erro ó ler a entrada\n");
         exit(1);
     }
+    else if (modo){
+        free(entrada);
+    }
 }
 
 //Función que pecha o ficheiro de lectura
-void pecharFicheiro(){
+void liberarFlex(){
     yylex_destroy();
 }
