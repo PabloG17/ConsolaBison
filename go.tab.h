@@ -61,7 +61,13 @@ extern int yydebug;
     GT = 262,                      /* GT  */
     LT = 263,                      /* LT  */
     NE = 264,                      /* NE  */
-    END = 265                      /* END  */
+    MAI = 265,                     /* MAI  */
+    MEI = 266,                     /* MEI  */
+    AND = 267,                     /* AND  */
+    OR = 268,                      /* OR  */
+    INCR = 269,                    /* INCR  */
+    DECR = 270,                    /* DECR  */
+    END = 271                      /* END  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -76,7 +82,7 @@ double val;
 char *ptr;
 char *lex;
 
-#line 80 "go.tab.h"
+#line 86 "go.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

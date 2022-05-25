@@ -46,4 +46,7 @@ int numVariablesDefinidasTS();
 //Función que libera unha determinada posición da táboa de símbolos
 void buscaEDestrueTS(char *chave);
 
+//Función que fai que unha variable da táboa de símbolos sexa constante no resto do programa
+int facerConstanteTS(char *chave);
+
 #endif //COMPILADORGO_TABOASIMBOLOS_H

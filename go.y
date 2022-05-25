@@ -34,11 +34,16 @@ char *lex;
 %token <val> NUM
 %token <lex> IDENTIFIER
 %token <lex> STRING
-%token  EQ
-%token  GT
-%token  LT
-%token  NE
-
+%left  EQ
+%left  GT
+%left  LT
+%left  NE
+%left	MAI
+%left	MEI
+%left	AND
+%left	OR
+%left	INCR
+%left	DECR
 
 %token END
 
@@ -50,7 +55,7 @@ char *lex;
 
 %type <val> expr
 %type <val> id
-%type <val> comparacion
+%type <val> booleano
 
 %%
 
@@ -61,8 +66,10 @@ input:	/* Baleiro */
 line:	'\n'
 	| expr '\n' {if(codErro==0 && echo==1)printf("%g\n", $1); else{codErro=0;}}
 	| expr ';' '\n'
-	| comparacion '\n' {if(codErro==0 && echo==1){if($1==1) printf("true\n"); else printf("false");} else{codErro=0;}}
-        | comparacion ';' '\n'
+	| booleano '\n' {if(codErro==0 && echo==1){if($1==1) printf("true\n"); else printf("false");} else{codErro=0;}}
+        | booleano ';' '\n'
+        | STRING '\n' {if(codErro==0 && echo==1) printf("%s\n", $1); else{codErro=0;}}
+	| STRING ';' '\n'
 ;
 expr:	NUM {$$ = $1;}
 	| id {$$ = $1;}
@@ -73,20 +80,27 @@ expr:	NUM {$$ = $1;}
 	| expr '*' expr {$$ = $1 * $3;}
 	| expr '/' expr {if($3!=0) $$ = $1 / $3; else{ printf("INDETERMINACIÓN: División por 0\n"); codErro=1;}}
 	| expr '^' expr {$$ = pow($1, $3);}
-	| IDENTIFIER '=' expr {$$ = $3;modificaValorTS($1, $3, NULL);}
+	| IDENTIFIER MAI expr {if(buscaTS($1)){$$ = modificaValorTS($1, buscaValorTS($1)+$3, NULL);} else {printf("O elemento non está inicializado\n"); codErro=1; free($1);}}
+	| IDENTIFIER MEI expr {if(buscaTS($1)){$$ = modificaValorTS($1, buscaValorTS($1)-$3, NULL);} else {printf("O elemento non está inicializado\n"); codErro=1; free($1);}}
+	| IDENTIFIER INCR {if(buscaTS($1)){$$ = modificaValorTS($1, buscaValorTS($1)+1, NULL);} else {printf("O elemento non está inicializado\n"); codErro=1; free($1);}}
+	| IDENTIFIER DECR {if(buscaTS($1)){$$ = modificaValorTS($1, buscaValorTS($1)-1, NULL);} else {printf("O elemento non está inicializado\n"); codErro=1; free($1);}}
+	| IDENTIFIER '=' expr {$$ = $3;if(modificaValorTS($1, $3, NULL)==-1){printf("As constantes e as funcións non se poden modificar!");codErro=1;} free($1);}
 	| IDENTIFIER '(' ')' {$$ = executaFuncion0TS($1, &codErro); codErro=1;}
-	| IDENTIFIER '(' STRING ')' {$$ = executaFuncionIDTS($1, $3, &codErro); if($$==0) codErro=1; free($3);}
-	| IDENTIFIER '(' expr ')' {$$ = executaFuncionTS($1, $3, &codErro);}
-	| IDENTIFIER '(' expr ',' expr ')' {$$ = executaFuncion2TS($1, $3, $5, &codErro);}
+	| IDENTIFIER '(' STRING ')' {$$ = executaFuncionIDTS($1, $3, &codErro);codErro=1; free($3); free($1);}
+	| IDENTIFIER '(' expr ')' {$$ = executaFuncionTS($1, $3, &codErro); free($1);}
+	| IDENTIFIER '(' expr ',' expr ')' {$$ = executaFuncion2TS($1, $3, $5, &codErro); free($1);}
 ;
-id:	IDENTIFIER {if(buscaTS($1)){$<val>$ = buscaValorTS($1);} else {printf("O elemento non está inicializado\n"); codErro=1; free($1);}}
+id:	IDENTIFIER {int a=buscaTS($1); if(a==2){$<val>$ = buscaValorTS($1);} else if(a==1){printf("Este elemento é unha función"); codErro=1;} else {printf("O elemento non está inicializado\n"); codErro=1; free($1);}}
 
-comparacion: expr '>' expr {if($1 > $3) $$=1; else $$=0;}
+booleano: expr '>' expr {if($1 > $3) $$=1; else $$=0;}
 	| expr '<' expr {if($1 < $3) $$=1; else $$=0;}
 	| expr GT expr {if($1 >= $3) $$=1; else $$=0;}
 	| expr LT expr {if($1 <= $3) $$=1; else $$=0;}
 	| expr EQ expr {if($1 == $3) $$=1; else $$=0;}
 	| expr NE expr {if($1 != $3) $$=1; else $$=0;}
+	| expr AND expr {if($1 && $3) $$=1; else $$=0;}
+	| expr OR expr {if($1 || $3) $$=1; else $$=0;}
+	| '!' expr {if(!$2) $$=1; else $$=0;}
 	;
 %%
 
@@ -119,7 +133,6 @@ void cambiarEcho(int i){
 
 //Función que establece un ficheiro como aberto no sistema para evitar chamadas en bucle
 void establecerFicheiro(char *nomeFicheiro){
-	int i; //Variable de iteración
 
 	ficheiro[numFicheiro] = (char*)malloc(sizeof(char)*(strlen(nomeFicheiro)+1));
 	strcpy(ficheiro[numFicheiro], nomeFicheiro);

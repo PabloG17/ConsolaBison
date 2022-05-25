@@ -22,7 +22,6 @@ int main(int argc, char **argv){
 
     inicializaTS(); //Inicializamos a táboa de símbolos
     inicializarSistema(); //Inicializamos o sistema de lectura
-    //imprimeTS(); //Imprimimos o contido da táboa de símbolos ó iniciar a execución
 
     if(argc > 1) {
         load(argv[1]);
@@ -31,11 +30,8 @@ int main(int argc, char **argv){
         entrada = lerConsola();
         lerEntrada(entrada, 1); //Abrimos a entrada
         yyparse(); //Comezamos a análise sintáctica
-
     } while (verEstado() == 0);
 
-
-    //imprimeTS(); //Imprimimos o contido da táboa de símbolos ó finalizar a execución
     eliminaTS(); //Eliminamos a táboa de símbolos
     liberarFlex(); //Liberamos a memoria almacenada por flex
     liberarBison(); //Liberamos a memoria almacenada por bison

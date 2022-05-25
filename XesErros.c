@@ -19,4 +19,10 @@ void erro(char* info, int codigo){
     if(codigo==FUNCIONNONEXISTE){
         printf(VERMELLO"\nA seguinte función non existe: %s\n" RESET, info);
     }
+    if(codigo==FUNCIONID){
+        printf(VERMELLO"\nA seguinte función é de tipo ID e polo tanto non se pode invocar con números ou variables (faltan as comillas?): %s\n" RESET, info);
+    }
+    if(codigo==FUNCIONEXPR){
+        printf(VERMELLO"\nA seguinte función  é de tipo EXPRESION e polo tanto non se pode invocar cunha cadea: %s\n" RESET, info);
+    }
 }

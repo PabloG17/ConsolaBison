@@ -74,6 +74,7 @@ double workspace(){
     else{
         printf("Non hai variables definidas\n");
     }
+    return 0;
 
 }
 
@@ -103,11 +104,13 @@ double clear(){
     else{
         printf("Non hai variables definidas\n");
     }
+    return 0;
 }
 
 //Función que serve para cambiar o estado do sistema e pechalo
 double sair(){
     cambiarEstado(-1);
+    return 0;
 }
 
 //Función que imprime mensaxes de axuda
@@ -116,20 +119,30 @@ double help(){
     printf("Este programa permite realizar operacións matemáticas e calcular a través de variables definidas\n");
     printf("Tamén se permite cargar un ficheiro de texto que conteña as operacións matemáticas que se desexan realizar\n");
     printf("Existen algunhas funcións básicas como sin, cos, exp, log, etc. que xa veñen incorporadas por defecto\n");
+    printf("Se as operacións matemáticas se introducen con ; final, estas non producirán saída visible\n");
+    printf("Pola contra, as chamadas a funcións do sistema si producirán saída visible\n");
     printf("Ademais tamén existen unha serie de comandos que poden ser de axuda:\n");
     printf("\n");
     printf("* Para cargar un ficheiro de texto, escribe load (\"<nome do ficheiro>\")\n");
     printf("* Para imprimir as variables definidas, escribe workspace()\n");
     printf("* Para limpar as variables definidas, escribe clear()\n");
-    printf("* Para sair, escribe exit()\n");
     printf("* Para ver a axuda, escribe help()\n");
+    printf("* Para silenciar a saída escribe echo(\"off\"), mentres que para volvela a activar escribe echo(\"on\")\n");
+    printf("* Para liberar unha variable, escribe destrue(\"<nome da variable>\")\n");
+    printf("* Para crear unha constante, declara a variable co nome e valor desexado e escribe const(\"<nome da variable>\")\n");
+    printf("* Para sair, escribe exit()\n");
     printf("\n");
+    return 0;
 
 }
 
-//Función que imprime o valor dunha variable
-double print(double num){
-    return num;
+double constante(char *var){
+    return facerConstanteTS(strtok(var, "\""));
+}
+
+double destruirVariable(char *var){
+    buscaEDestrueTS(strtok(var, "\""));
+    return 0;
 }
 
 
@@ -149,4 +162,6 @@ double saida(char* str){
             return 0;
         }
     }
+
+    return 0;
 }

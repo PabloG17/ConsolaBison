@@ -43,4 +43,7 @@ void buscaEDestrue(struct taboaHash *t, char *chave);
 //Función que devolve o número de variables introducidas na táboa hash
 int numVariablesDefinidas();
 
+//Función que devolve o compoñente léxico asociado ó lexema
+int facerConstante(struct taboaHash *t, char *chave);
+
 #endif //COMPILADORGO_THASH_H

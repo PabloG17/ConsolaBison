@@ -13,7 +13,7 @@
 %option noinput
 
 
-/* Definimos as expresións regulares */
+/* Definimos as expresións regulares, moitas delas non se usan no programa pero son definidas de cara a futuras versións */
 NEWLINE           \n
 TAB               \t
 SPACE             [ ]
@@ -98,8 +98,14 @@ STRING_LITERAL     {RAW_STRING_LITERAL}|{INTERPRETED_STRING_LITERAL}
 {MULTIPLY}          return('*');
 {DIVIDE}            return('/');
 {MODULO}            return('%');
-{AND}               return('&&');
-{OR}                return('||');
+
+{INCREMENT}         return(INCR);
+{DECREMENT}         return(DECR);
+{INCREMENT_EQUAL}   return(MAI);
+{DECREMENT_EQUAL}   return(MEI);
+
+{AND_OP}            return(AND);
+{OR}                return(OR);
 {XOR}               return('^');
 {ASSINGMENT}        return('=');
 {EQUAL}             return(EQ);

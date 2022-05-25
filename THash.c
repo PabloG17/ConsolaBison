@@ -97,6 +97,9 @@ int busca(taboaHash *t, char *chave){
 
     while(celda!=NULL && celda->lexema!=NULL){ //Iteramos polas celdas ata atopar o lexema que buscamos
         if(strcmp(celda->lexema, chave)==0){
+            if(celda->ptr==NULL || celda->ptr==(void*)2){
+                return 2;
+            }
             return 1;
         }
         else{
@@ -138,8 +141,11 @@ double modificaValor(taboaHash *t, char *chave, double valor, void *ptr){
             if (celda->ptr == NULL) {
                 celda->valor = valor;
                 celda->ptr = ptr;
+                return valor;
             }
-            return 1;
+            else{
+                return -1;
+            }
         }
         else{
             celda = celda->seguinte;
@@ -301,4 +307,26 @@ void buscaEDestrue(taboaHash *t, char *chave){
             celda = celda->seguinte;
         }
     }
+}
+
+//Función que devolve o compoñente léxico asociado ó lexema
+int facerConstante(taboaHash *t, char *chave){
+
+    int pos = hash(chave); //Calculamos o valor hash do lexema
+
+    struct celda *celda = t->hash[pos];
+
+    while(celda!=NULL && celda->lexema!=NULL){ //Iteramos polas celdas ata atopar o lexema que buscamos
+        if(strcmp(celda->lexema, chave)==0) {
+            //Especificamos o punteiro para indicar que estamos ante unha constante
+            if (celda->ptr == NULL) {
+                celda->ptr = (void*)2;
+            }
+            return 1;
+        }
+        else{
+            celda = celda->seguinte;
+        }
+    }
+    return 0;
 }

@@ -19,9 +19,14 @@ void inicializaTS(){
     taboaSimbolos=inicializarTaboa();
 
     //Insertamos as funcións iniciais
-    for(i=0; i<FUNCIONS; i++){
-        insertarHash(taboaSimbolos, funcions[i].nome, 0, funcions[i].func);
+    for(i=0; i<FUNCIONS_EXPR; i++){
+        insertarHash(taboaSimbolos, funcions_expr[i].nome, 0, funcions_expr[i].func);
     }
+
+    for(i=0; i<FUNCIONS_ID; i++){
+        insertarHash(taboaSimbolos, funcions_ID[i].nome, 0, funcions_ID[i].func);
+    }
+
     insertarHash(taboaSimbolos, "pi", PI, (void*)2);
     insertarHash(taboaSimbolos, "e", E, (void*)2);
 
@@ -58,9 +63,9 @@ double executaFuncion0TS(char *chave, int* codErro){
     int i=0; //Variable de iteración
 
     //Buscamos as funcións entre a lista e vemos se ten o número adecuado de argumentos
-    for(i=0;i<FUNCIONS; i++){
-        if(strcmp(funcions[i].nome, chave)==0){
-            if(funcions[i].args==0){
+    for(i=0;i<FUNCIONS_EXPR; i++){
+        if(strcmp(funcions_expr[i].nome, chave)==0){
+            if(funcions_expr[i].args==0){
                 //Se a función existe e os argumentos coinciden, invocámola
                 ptr=buscaFuncionTS(chave);
                 return ((double (*)())ptr)();
@@ -73,6 +78,15 @@ double executaFuncion0TS(char *chave, int* codErro){
             }
         }
     }
+
+    for(i=0;i<FUNCIONS_ID; i++) {
+        if (strcmp(funcions_ID[i].nome, chave) == 0) {
+            erro(chave,FUNCIONID);
+            *codErro=FUNCIONID;
+            return 0;
+        }
+    }
+
     erro(chave, FUNCIONNONEXISTE);
     *codErro=FUNCIONNONEXISTE;
     return(0);
@@ -84,9 +98,9 @@ double executaFuncionTS(char *chave, double valor, int* codErro){
     int i=0; //Variable de iteración
 
     //Buscamos as funcións entre a lista e vemos se ten o número adecuado de argumentos
-    for(i=0;i<FUNCIONS; i++){
-        if(strcmp(funcions[i].nome, chave)==0){
-            if(funcions[i].args==1){
+    for(i=0;i<FUNCIONS_EXPR; i++){
+        if(strcmp(funcions_expr[i].nome, chave)==0){
+            if(funcions_expr[i].args==1){
                 //Se a función existe e os argumentos coinciden, invocámola
                 ptr=buscaFuncionTS(chave);
                 return ((double (*)(double))ptr)(valor);
@@ -99,6 +113,15 @@ double executaFuncionTS(char *chave, double valor, int* codErro){
             }
         }
     }
+
+    for(i=0;i<FUNCIONS_ID; i++) {
+        if (strcmp(funcions_ID[i].nome, chave) == 0) {
+            erro(chave,FUNCIONID);
+            *codErro=FUNCIONID;
+            return 0;
+        }
+    }
+
     erro(chave, FUNCIONNONEXISTE);
     *codErro=FUNCIONNONEXISTE;
     return(0);
@@ -110,9 +133,9 @@ double executaFuncion2TS(char *chave, double valor, double valor2, int* codErro)
     int i; //Variable de iteración
 
     //Buscamos as funcións entre a lista e vemos se ten o número adecuado de argumentos
-    for(i=0;i<FUNCIONS; i++){
-        if(strcmp(funcions[i].nome, chave)==0){
-            if(funcions[i].args==2){
+    for(i=0;i<FUNCIONS_EXPR; i++){
+        if(strcmp(funcions_expr[i].nome, chave)==0){
+            if(funcions_expr[i].args==2){
                 //Se a función existe e os argumentos coinciden, invocámola
                 ptr=buscaFuncionTS(chave);
                 return ((double (*)(double, double))ptr)(valor, valor2);
@@ -125,6 +148,15 @@ double executaFuncion2TS(char *chave, double valor, double valor2, int* codErro)
             }
         }
     }
+
+    for(i=0;i<FUNCIONS_ID; i++) {
+        if (strcmp(funcions_ID[i].nome, chave) == 0) {
+            erro(chave,FUNCIONID);
+            *codErro=FUNCIONID;
+            return 0;
+        }
+    }
+
     erro(chave, FUNCIONNONEXISTE);
     *codErro=FUNCIONNONEXISTE;
     return(0);
@@ -137,9 +169,9 @@ double executaFuncionIDTS(char *chave, char* valor, int* codErro){
     int i; //Variable de iteración
 
     //Buscamos as funcións entre a lista e vemos se ten o número adecuado de argumentos
-    for(i=0;i<FUNCIONS; i++){
-        if(strcmp(funcions[i].nome, chave)==0){
-            if(funcions[i].args==1){
+    for(i=0;i<FUNCIONS_ID; i++){
+        if(strcmp(funcions_ID[i].nome, chave)==0){
+            if(funcions_ID[i].args==1){
                 //Se a función existe e os argumentos coinciden, invocámola
                 ptr=buscaFuncionTS(chave);
                 return ((double (*)(char*))ptr)(valor);
@@ -152,6 +184,15 @@ double executaFuncionIDTS(char *chave, char* valor, int* codErro){
             }
         }
     }
+
+    for(i=0;i<FUNCIONEXPR; i++) {
+        if (strcmp(funcions_expr[i].nome, chave) == 0) {
+            erro(chave,FUNCIONEXPR);
+            *codErro=FUNCIONEXPR;
+            return 0;
+        }
+    }
+
     erro(chave, FUNCIONNONEXISTE);
     *codErro=FUNCIONNONEXISTE;
     return(0);
@@ -182,4 +223,9 @@ int numVariablesDefinidasTS(){
 //Función que libera unha determinada posición da táboa de símbolos
 void buscaEDestrueTS(char *chave){
     buscaEDestrue(taboaSimbolos, chave);
+}
+
+//Función que fai que unha variable sexa constante no resto do programa
+int facerConstanteTS(char *chave){
+    return facerConstante(taboaSimbolos, chave);
 }
